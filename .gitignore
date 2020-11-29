@@ -13,6 +13,7 @@
 .factorypath
 .project
 .settings
+*.settings
 *.classpath
 *.factorypath
 *.project
