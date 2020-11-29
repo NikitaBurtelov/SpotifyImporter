@@ -9,6 +9,12 @@
 *.idea
 **/target
 **/src/main/resources
+.classpath
+.factorypath
+.project
+*.classpath
+*.factorypath
+*.project
 
 # BlueJ files
 *.ctxt
