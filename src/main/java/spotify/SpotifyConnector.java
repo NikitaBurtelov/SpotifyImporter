@@ -47,7 +47,7 @@ public class SpotifyConnector {
         String url = new URIBuilder().setScheme("https")
                 .setHost("accounts.spotify.com")
                 .setPath("/authorize")
-                .addParameter("client_id", "c700db30083545a6a05352d0304a0597")
+                .addParameter("client_id", client_id)
                 .addParameter("response_type","code")
                 .addParameter("redirect_uri","http://localhost:8888/callback").toString();
 
