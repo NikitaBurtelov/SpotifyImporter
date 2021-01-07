@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 
 import java.io.*;
 import java.util.List;
-import java.util.Map;
 
 public class SpotifyConnector {
     private static String code;
@@ -37,6 +36,7 @@ public class SpotifyConnector {
         List<Track> trackList = playlist.getArrTrack();
 
         for (Track track : trackList) {
+
             track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
         }
     }

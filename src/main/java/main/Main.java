@@ -5,7 +5,7 @@ import spotify.SpotifyConnector;
 import vk.VkСonnector;
 
 public class Main {
-    private  static String urlPlaylistTest = "https://vk.com/music/playlist/154428962_150_acc85b2332c2da30ff";
+    private  static String urlPlaylistTest = "https://vk.com/music/playlist/154428962_156_479c9472c149f42497";
 
     public static void main(String[] args) {
         try {

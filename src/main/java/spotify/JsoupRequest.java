@@ -124,12 +124,17 @@ public class JsoupRequest {
 
             JsonObject root = jsonElement.getAsJsonObject();
 
-            String id = root.get("tracks").getAsJsonObject()
-                    .get("items").getAsJsonArray().
-                            get(0).getAsJsonObject().
-                            get("id").toString();
+            if (root.get("tracks").getAsJsonObject()
+                    .get("items").getAsJsonArray().size() != 0) {
 
-            return id.substring(1, id.length() - 1);
+                String id = root.get("tracks").getAsJsonObject()
+                        .get("items").getAsJsonArray().
+                                get(0).getAsJsonObject().
+                                get("id").toString();
+
+                return id.substring(1, id.length() - 1);
+            }
+            else return null;
 
         } catch (IOException exception) {
             exception.printStackTrace();

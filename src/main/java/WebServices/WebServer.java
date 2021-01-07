@@ -17,7 +17,6 @@ public class WebServer implements Runnable {
             AllRequestsServlet allRequestsServlet = new AllRequestsServlet();
             ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
             contextHandler.addServlet(new ServletHolder(allRequestsServlet), "/callback");
-            //http://localhost:8888/callback
             org.eclipse.jetty.server.Server server = new Server(port);
             server.setHandler(contextHandler);
 
