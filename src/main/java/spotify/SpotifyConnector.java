@@ -45,15 +45,18 @@ public class SpotifyConnector {
 
     private void createPlaylist(Playlist playlist) {
         JsoupRequest.requestCreatePlaylist(playlist, accessToken, user_id);
-        System.out.println(playlist.getId());
     }
 
     private void addItems(Playlist playlist) {
         StringBuilder uris = new StringBuilder();
-        for (Track track : playlist.getArrTrack()) {
-            uris.append("spotify:track:").append(track.getIdSpotify()).append(",");
-        }
+        for (Track track : playlist.getArrTrack())
+            uris.append("\"spotify:track:").append(track.getIdSpotify()).append("\",");
+
+        if (uris.length() > 0)
+            uris.deleteCharAt(uris.length() - 1);
+
         JsoupRequest.requestAddItems(playlist.getId(), uris.toString(), accessToken);
+        //"uris": ["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M", "spotify:episode:512ojhOuo1ktJprKbVcKyQ"]}
     }
 
     private void startStream() {
@@ -96,7 +99,6 @@ public class SpotifyConnector {
             getCodeUrl(); //get Spotify url + authorization
             buffRead();  //input code
             accessToken = JsoupRequest.getToken(code, client_id, client_secret);
-            System.out.println(accessToken); //output token
             getIdTrackSpotify(playlist);
             createPlaylist(playlist);
             addItems(playlist);

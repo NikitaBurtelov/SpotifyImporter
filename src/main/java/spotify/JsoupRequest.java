@@ -26,7 +26,7 @@ public class JsoupRequest {
                     .ignoreContentType(true)
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9" + ",*/*;q=0.8")
                     .post();
-            System.out.println(doc.text());
+
             JsonParser parser = new JsonParser();
             JsonElement jsonElement = parser.parse(doc.text());
 
@@ -65,12 +65,11 @@ public class JsoupRequest {
                     .method(Connection.Method.POST)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .requestBody("{\"uris\": [\"spotify:track:1Sh3BZwxWAU04hrGRjB1Vx\"]}")
+                    .requestBody("{\"uris\": [" + uris + "]}")
                     .header("Accept", "application/json")
                     .header("Authorization", "Bearer " + accessToken)
                     .post();
 
-            System.out.println(doc.text());
             System.out.println("Playlist moved");
 
         } catch (IOException exception) {
@@ -125,10 +124,12 @@ public class JsoupRequest {
 
             JsonObject root = jsonElement.getAsJsonObject();
 
-            return root.get("tracks").getAsJsonObject()
+            String id = root.get("tracks").getAsJsonObject()
                     .get("items").getAsJsonArray().
                             get(0).getAsJsonObject().
                             get("id").toString();
+
+            return id.substring(1, id.length() - 1);
 
         } catch (IOException exception) {
             exception.printStackTrace();
