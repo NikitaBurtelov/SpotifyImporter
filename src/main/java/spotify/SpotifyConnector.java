@@ -1,6 +1,8 @@
 package spotify;
 
 import WebServices.WebServer;
+import musicdata.Playlist;
+import musicdata.Track;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,15 +11,19 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SpotifyConnector {
     private static String code;
     public boolean flag = false;
     private final String client_id = getJsonObject("client_id");
+    private final String user_id = getJsonObject("user_id");
     private final String client_secret = getJsonObject("client_secret");
     private final String redirect_uri = getJsonObject("redirect_uri");
+    private String accessToken;
 
     private static String getJsonObject(String key) {
         try {
@@ -27,6 +33,20 @@ public class SpotifyConnector {
             fileNotFoundException.printStackTrace();
             return null;
         }
+    }
+
+    private void getIdTrackSpotify(Playlist playlist) {
+        List<Track> trackList = playlist.getArrTrack();
+
+        for (Track track : trackList) {
+            track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
+            //System.out.println(track.getIdSpotify());
+        }
+    }
+
+    private void createPlaylist(Playlist playlist) {
+        JsoupRequest.requestCreatePlaylist(playlist, accessToken, user_id);
+        System.out.println(playlist.getId());
     }
 
     private void startStream() {
@@ -49,6 +69,7 @@ public class SpotifyConnector {
                 .setPath("/authorize")
                 .addParameter("client_id", client_id)
                 .addParameter("response_type","code")
+                .addParameter("scope","playlist-modify-public playlist-modify-private")
                 .addParameter("redirect_uri","http://localhost:8888/callback").toString();
 
         System.out.println(url);
@@ -62,13 +83,16 @@ public class SpotifyConnector {
         System.out.println(doc.select("*"));
     }
 
-    public void runSpotifyImporter() {
+    public void runSpotifyImporter(Playlist playlist) {
         try {
             startStream(); //run server. localhost. port 8888
             getCodeUrl(); //get Spotify url + authorization
-            buffRead(); //input code
+            buffRead();  //input code
+            accessToken = JsoupRequest.getToken(code, client_id, client_secret);
+            System.out.println(accessToken); //output token
+            //getIdTrackSpotify(playlist);
+            //createPlaylist(playlist);
 
-            System.out.println(JsoupRequest.getToken(code, client_id, client_secret)); //output token
         }
         catch (Exception exception) {
             exception.printStackTrace();

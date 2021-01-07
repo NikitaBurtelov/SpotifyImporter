@@ -29,7 +29,7 @@ public class VkСonnector {
         }
     }
 
-    public static void getTrackVk(Playlist playlist, String urlPlaylist) {
+    public static void setTrackVkPlaylist(Playlist playlist, String urlPlaylist) {
         try {
             ArrayList<String> arrTitle = new ArrayList<>();
             ArrayList<String> arrAuthor = new ArrayList<>();
@@ -55,6 +55,8 @@ public class VkСonnector {
             for (int i = 0; i < arrTitle.size(); i++) {
                 playlist.addTrack(new Track(arrTitle.get(i), arrAuthor.get(i)));
             }
+
+            playlist.setTitle(doc.select("h1.AudioPlaylistSnippet__title--main").first().text());
         }
         catch (IOException exception) {
             exception.printStackTrace();

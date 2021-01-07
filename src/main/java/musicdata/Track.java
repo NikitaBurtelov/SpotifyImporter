@@ -1,9 +1,10 @@
 package musicdata;
 
 public class Track {
-    public String title;
-    public String artist;
-    public String album;
+    private String title;
+    private String artist;
+    private String album;
+    private String idSpotify;
 
     public Track(String title, String artist) {
         this.title = title;
@@ -28,6 +29,10 @@ public class Track {
         this.album = album;
     }
 
+    public void setIdSpotify(String idSpotify) {
+        this.idSpotify = idSpotify;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -38,5 +43,9 @@ public class Track {
 
     public String getAlbum() {
         return album;
+    }
+
+    public String getIdSpotify() {
+        return idSpotify;
     }
 }

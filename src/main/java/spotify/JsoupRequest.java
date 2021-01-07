@@ -1,5 +1,10 @@
 package spotify;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import musicdata.Playlist;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -9,26 +14,104 @@ public class JsoupRequest {
 
     public static String getToken(String code, String clientId, String clientSecret) {
         try {
-            String url = "curl -H \"Content-Type: application/x-www-form-urlencoded\" -d \"grant_type=authorization_code&client_id=c700db30083545a6a05352d0304a0597&client_secret=3938d992c7a7492ebd98e2bb45b2d259&code=AQAoqH34YljVcU6lcfwdnQW-Vm6z9j7wta3jSwti2SvwR-xYSLQ02F9V09wNFK1mT7vj0ZrPauMZ5hOrbh-uG3jNZ8Tqs7zZNduGVhdUKJse4K-7OnRmyKeHrqxlKaE4oSNB3c6oVm4KX2jukEOOhwIpAuMcxRpRt52B3eyy99cJPw&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback\" -X POST https://accounts.spotify.com/api/token";
-
             Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")
                     .header("Accept-Language", "en")
-                    .header("Content-Type","application/x-www-form-urlencoded;charset=UTF-8")
-                    .data("grant_type","authorization_code")
-                    .data("client_id",clientId)
-                    .data("client_secret",clientSecret)
+                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                    .data("grant_type", "authorization_code")
+                    .data("client_id", clientId)
+                    .data("client_secret", clientSecret)
                     .data("code", code)
                     .data("redirect_uri", "http://localhost:8888/callback")
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9"+ ",*/*;q=0.8")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9" + ",*/*;q=0.8")
                     .post();
+            System.out.println(doc.text());
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement = parser.parse(doc.text());
 
-            return doc.text();
-        }
-        catch (IOException exception) {
+            JsonObject root = jsonElement.getAsJsonObject();
+            String token = root.get("access_token").toString();
+
+            return token.substring(1, token.length() - 1);
+
+        } catch (IOException exception) {
             exception.printStackTrace();
         }
         return new Exception().getMessage();
+    }
+
+    public static void updateToken(String refreshToken) {
+        try {
+            Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                    .data("grant_type", "refresh_token")
+                    .data("refresh_token", refreshToken)
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9" + ",*/*;q=0.8")
+                    .post();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static void requestCreatePlaylist(Playlist playlist, String accessToken, String userId) {
+        try {
+            String doc = Jsoup.connect("https://api.spotify.com/v1/users/"+userId+"/playlists")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/json")
+                    .method(Connection.Method.POST)
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .requestBody("{" + "\"name\":" + "\"" + playlist.getTitle() + "\"," + "\"description\": \"\"," + "\"public\": true"+"}")
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .execute()
+                    .body();
+
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement = parser.parse(doc);
+
+            JsonObject root = jsonElement.getAsJsonObject();
+            String id = root.get("id").toString();
+
+            playlist.setId(id.substring(1, id.length() - 1));
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public static String requestId(String q, String accessToken) {
+        try {
+            Document doc = Jsoup.connect("https://api.spotify.com/v1/search")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/json")
+                    .data("q", q)
+                    .data("type", "track")
+                    .data("limit", "1")
+                    .data("offset", "0")
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .get();
+
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement = parser.parse(doc.text());
+
+            JsonObject root = jsonElement.getAsJsonObject();
+
+            return root.get("tracks").getAsJsonObject()
+                    .get("items").getAsJsonArray().
+                            get(0).getAsJsonObject().
+                            get("id").toString();
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return exception.getMessage();
+        }
     }
 }
