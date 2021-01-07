@@ -57,6 +57,23 @@ public class JsoupRequest {
         }
     }
 
+    public static void requestAddItems(String playlistId, String uris, String accessToken) {
+        try {
+            Document doc = Jsoup.connect("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/json")
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .data("uris", uris)
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .post();
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public static void requestCreatePlaylist(Playlist playlist, String accessToken, String userId) {
         try {
             String doc = Jsoup.connect("https://api.spotify.com/v1/users/"+userId+"/playlists")
