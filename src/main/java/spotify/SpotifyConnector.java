@@ -40,13 +40,20 @@ public class SpotifyConnector {
 
         for (Track track : trackList) {
             track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
-            //System.out.println(track.getIdSpotify());
         }
     }
 
     private void createPlaylist(Playlist playlist) {
         JsoupRequest.requestCreatePlaylist(playlist, accessToken, user_id);
         System.out.println(playlist.getId());
+    }
+
+    private void addItems(Playlist playlist) {
+        StringBuilder uris = new StringBuilder();
+        for (Track track : playlist.getArrTrack()) {
+            uris.append("spotify:track:").append(track.getIdSpotify()).append(",");
+        }
+        JsoupRequest.requestAddItems(playlist.getId(), uris.toString(), accessToken);
     }
 
     private void startStream() {
@@ -90,9 +97,9 @@ public class SpotifyConnector {
             buffRead();  //input code
             accessToken = JsoupRequest.getToken(code, client_id, client_secret);
             System.out.println(accessToken); //output token
-            //getIdTrackSpotify(playlist);
-            //createPlaylist(playlist);
-
+            getIdTrackSpotify(playlist);
+            createPlaylist(playlist);
+            addItems(playlist);
         }
         catch (Exception exception) {
             exception.printStackTrace();

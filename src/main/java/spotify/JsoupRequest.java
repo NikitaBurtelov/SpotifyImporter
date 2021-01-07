@@ -62,12 +62,16 @@ public class JsoupRequest {
             Document doc = Jsoup.connect("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks")
                     .header("Accept-Language", "en")
                     .header("Content-Type", "application/json")
+                    .method(Connection.Method.POST)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .data("uris", uris)
+                    .requestBody("{\"uris\": [\"spotify:track:1Sh3BZwxWAU04hrGRjB1Vx\"]}")
                     .header("Accept", "application/json")
                     .header("Authorization", "Bearer " + accessToken)
                     .post();
+
+            System.out.println(doc.text());
+            System.out.println("Playlist moved");
 
         } catch (IOException exception) {
             exception.printStackTrace();
