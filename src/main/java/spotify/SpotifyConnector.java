@@ -11,11 +11,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.util.List;
+import java.util.Iterator;
 
 public class SpotifyConnector {
     private static String code;
-    public boolean flag = false;
     private final String client_id = getJsonObject("client_id");
     private final String user_id = getJsonObject("user_id");
     private final String client_secret = getJsonObject("client_secret");
@@ -33,11 +32,18 @@ public class SpotifyConnector {
     }
 
     private void getIdTrackSpotify(Playlist playlist) {
-        List<Track> trackList = playlist.getArrTrack();
+        Iterator<Track> trackIterator = playlist.getArrTrack().iterator();
+        String idTrack;
 
-        for (Track track : trackList) {
+        while (trackIterator.hasNext()) {
+            Track track = trackIterator.next();
 
-            track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
+            idTrack = JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken);
+
+            if (idTrack != null)
+                track.setIdSpotify(idTrack);
+            else
+                trackIterator.remove();
         }
     }
 

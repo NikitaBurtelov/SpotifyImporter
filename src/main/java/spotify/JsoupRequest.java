@@ -24,7 +24,8 @@ public class JsoupRequest {
                     .data("redirect_uri", "http://localhost:8888/callback")
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9" + ",*/*;q=0.8")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9"
+                            + ",*/*;q=0.8")
                     .post();
 
             JsonParser parser = new JsonParser();
@@ -50,7 +51,8 @@ public class JsoupRequest {
                     .data("refresh_token", refreshToken)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9" + ",*/*;q=0.8")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9"
+                            + ",*/*;q=0.8")
                     .post();
         } catch (IOException exception) {
             exception.printStackTrace();
@@ -59,7 +61,8 @@ public class JsoupRequest {
 
     public static void requestAddItems(String playlistId, String uris, String accessToken) {
         try {
-            Document doc = Jsoup.connect("https://api.spotify.com/v1/playlists/" + playlistId + "/tracks")
+            Document doc = Jsoup.connect("https://api.spotify.com/v1/playlists/"
+                    + playlistId + "/tracks")
                     .header("Accept-Language", "en")
                     .header("Content-Type", "application/json")
                     .method(Connection.Method.POST)
@@ -85,7 +88,10 @@ public class JsoupRequest {
                     .method(Connection.Method.POST)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
-                    .requestBody("{" + "\"name\":" + "\"" + playlist.getTitle() + "\"," + "\"description\": \"\"," + "\"public\": true"+"}")
+                    .requestBody("{" + "\"name\":" + "\"" +
+                            playlist.getTitle() +
+                            "\"," + "\"description\": \"\","
+                            + "\"public\": true"+"}")
                     .header("Accept", "application/json")
                     .header("Authorization", "Bearer " + accessToken)
                     .execute()
