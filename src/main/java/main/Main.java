@@ -1,6 +1,7 @@
 package main;
 
 import musicdata.Playlist;
+import spotify.JsoupRequest;
 import spotify.SpotifyConnector;
 import vk.VkСonnector;
 
@@ -11,6 +12,7 @@ public class Main {
         try {
             Playlist playlist = new Playlist();
             VkСonnector.setTrackVkPlaylist(playlist, urlPlaylistTest);
+            //JsoupRequest.requestUploadImage("");
             new SpotifyConnector().runSpotifyImporter(playlist);
         }
         catch (Exception exception) {

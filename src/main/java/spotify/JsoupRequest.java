@@ -42,6 +42,25 @@ public class JsoupRequest {
         return new Exception().getMessage();
     }
 
+    public static void requestUploadImage(String playlistId, String imageBase64, String accessToken) {
+        try {
+            Jsoup.connect("https://api.spotify.com/v1/playlists/"
+                    + playlistId + "/images")
+                    .method(Connection.Method.POST)
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/json")
+                    .method(Connection.Method.POST)
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .requestBody(imageBase64)
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .post();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public static void updateToken(String refreshToken) {
         try {
             Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")
