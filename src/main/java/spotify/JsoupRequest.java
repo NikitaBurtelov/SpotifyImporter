@@ -46,10 +46,8 @@ public class JsoupRequest {
         try {
             Jsoup.connect("https://api.spotify.com/v1/playlists/"
                     + playlistId + "/images")
-                    .method(Connection.Method.POST)
                     .header("Accept-Language", "en")
                     .header("Content-Type", "application/json")
-                    .method(Connection.Method.POST)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
                     .requestBody(imageBase64)
