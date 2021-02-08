@@ -7,6 +7,7 @@ import musicdata.Playlist;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 
@@ -61,20 +62,23 @@ public class JsoupRequest {
         }
     }
 
-    public static void updateToken(String refreshToken) {
+    public static String updateToken(String refreshToken, String client_id) {
         try {
             Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")
                     .header("Accept-Language", "en")
                     .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
                     .data("grant_type", "refresh_token")
                     .data("refresh_token", refreshToken)
+                    .data("client_id", client_id)
                     .ignoreHttpErrors(true)
                     .ignoreContentType(true)
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9"
                             + ",*/*;q=0.8")
                     .post();
+            return doc.text();
         } catch (IOException exception) {
             exception.printStackTrace();
+            return null;
         }
     }
 

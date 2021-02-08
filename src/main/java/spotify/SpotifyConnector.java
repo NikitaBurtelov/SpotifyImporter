@@ -21,6 +21,10 @@ public class SpotifyConnector {
     private final String redirect_uri = getJsonObject("redirect_uri");
     private String accessToken;
 
+    public static void refreshToken(String token, String id) {
+        JsoupRequest.updateToken(token, id);
+    }
+
     private static String getJsonObject(String key) {
         try {
             return ((JSONObject) (new JSONParser()).parse(new FileReader("src/main/resources/data/spotify_token.json"))).get(key).toString();
