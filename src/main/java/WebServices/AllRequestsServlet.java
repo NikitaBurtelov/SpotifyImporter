@@ -1,5 +1,6 @@
 package WebServices;
 
+import musicdata.Playlist;
 import spotify.SpotifyConnector;
 
 import javax.servlet.http.HttpServlet;
@@ -9,6 +10,12 @@ import java.io.IOException;
 
 public class AllRequestsServlet extends HttpServlet {
     private WebServer webServer;
+    private Playlist playlist;
+
+
+    public AllRequestsServlet(Playlist playlist) {
+        this.playlist = playlist;
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) {
         try{
@@ -24,8 +31,19 @@ public class AllRequestsServlet extends HttpServlet {
         }
     }
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String message = request.getParameter("message");
+        String url = request.getParameter("url");
+        System.out.println(request.getParameter("url"));
+
+        if (url == null) {
+            response.setContentType("text/html;charset=utf-8");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        else {
+            playlist.setUrlVk(url);
+        }
+
         response.setContentType("text/html;charset=utf-8");
-        System.out.println(message);
+        System.out.println(url);
     }
 }

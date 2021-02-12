@@ -66,8 +66,8 @@ public class SpotifyConnector {
         JsoupRequest.requestAddItems(playlist.getId(), uris.toString(), accessToken);
     }
 
-    private void startStream() {
-        new Thread(new WebServer()).start();
+    private void startStream(Playlist playlist) {
+        new Thread(new WebServer(playlist)).start();
     }
 
     private static void buffRead() {
@@ -102,7 +102,7 @@ public class SpotifyConnector {
 
     public void runSpotifyImporter(Playlist playlist) {
         try {
-            startStream(); //run server. localhost. port 8888
+            startStream(playlist); //run server. localhost. port 8888
             getCodeUrl(); //get Spotify url + authorization
             buffRead();  //input code
             accessToken = JsoupRequest.getToken(code, client_id, client_secret);
