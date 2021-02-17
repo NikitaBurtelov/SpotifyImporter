@@ -38,13 +38,8 @@ public class AllRequestsServlet extends HttpServlet {
         }
     }
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String message = request.getParameter("url");
-
         playlist.setUrl(request.getParameter("url"));
-
-        System.out.println("RUN POST VKConn");
         VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
-
         spotifyConnector.getCodeUrl();
 
         response.setContentType("text/html;charset=utf-8");

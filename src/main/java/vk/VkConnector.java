@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class VkConnector {
-    //private final String token = getJsonObject("spotify_token");
-
     private static String getJsonObject(String filePath) {
         try {
             return ((JSONObject) (new JSONParser()).parse(new FileReader(filePath))).get("token").toString();
