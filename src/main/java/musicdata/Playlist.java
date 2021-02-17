@@ -6,7 +6,7 @@ public class Playlist {
     private ArrayList<Track> arrTracks;
     private String title;
     private String id;
-    private String urlVk;
+    private String url;
 
     public Playlist(){
         arrTracks = new ArrayList<>();
@@ -24,6 +24,10 @@ public class Playlist {
         this.id = id;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -32,13 +36,11 @@ public class Playlist {
         return id;
     }
 
-    public void setUrlVk(String urlVk) {
-        this.urlVk = urlVk;
+    public String getUrl() {
+        return url;
     }
 
     public void addTrack(Track track) {
         arrTracks.add(track);
     }
-
-    public void removeTrack(Track track) {arrTracks.remove(track);}
 }

@@ -11,18 +11,25 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.*;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SpotifyConnector {
-    private static String code;
+    private String code;
     private final String client_id = getJsonObject("client_id");
     private final String user_id = getJsonObject("user_id");
     private final String client_secret = getJsonObject("client_secret");
     private final String redirect_uri = getJsonObject("redirect_uri");
-    private String accessToken;
+    private static String accessToken;
 
-    public static void refreshToken(String token, String id) {
-        JsoupRequest.updateToken(token, id);
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     private static String getJsonObject(String key) {
@@ -36,18 +43,10 @@ public class SpotifyConnector {
     }
 
     private void getIdTrackSpotify(Playlist playlist) {
-        Iterator<Track> trackIterator = playlist.getArrTrack().iterator();
-        String idTrack;
+        List<Track> trackList = playlist.getArrTrack();
 
-        while (trackIterator.hasNext()) {
-            Track track = trackIterator.next();
-
-            idTrack = JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken);
-
-            if (idTrack != null)
-                track.setIdSpotify(idTrack);
-            else
-                trackIterator.remove();
+        for (Track track : trackList) {
+            track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
         }
     }
 
@@ -66,11 +65,11 @@ public class SpotifyConnector {
         JsoupRequest.requestAddItems(playlist.getId(), uris.toString(), accessToken);
     }
 
-    private void startStream(Playlist playlist) {
-        new Thread(new WebServer(playlist)).start();
-    }
+    //private void startStream() {
+    //  new Thread(new WebServer()).start();
+    //}
 
-    private static void buffRead() {
+    /*private static void buffRead() {
         try{
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             code = reader.readLine();
@@ -78,9 +77,9 @@ public class SpotifyConnector {
         catch (IOException exception) {
             exception.printStackTrace();
         }
-    }
+    }*/
     //Spotify url
-    private void getCodeUrl() {
+    public void getCodeUrl() {
         String url = new URIBuilder().setScheme("https")
                 .setHost("accounts.spotify.com")
                 .setPath("/authorize")
@@ -92,19 +91,11 @@ public class SpotifyConnector {
         System.out.println(url);
     }
 
-    private void getCode() throws IOException {
-        Document doc = Jsoup.connect("http://localhost:8888/callback")
-                .referrer("http://www.google.com")
-                .get();
-
-        System.out.println(doc.select("*"));
-    }
-
     public void runSpotifyImporter(Playlist playlist) {
         try {
-            startStream(playlist); //run server. localhost. port 8888
-            getCodeUrl(); //get Spotify url + authorization
-            buffRead();  //input code
+            //startStream(); //run server. localhost. port 8888
+            //getCodeUrl(); //get Spotify url + authorization
+            //buffRead();  //input code
             accessToken = JsoupRequest.getToken(code, client_id, client_secret);
             getIdTrackSpotify(playlist);
             createPlaylist(playlist);

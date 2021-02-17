@@ -1,24 +1,20 @@
 package main;
 
+import WebServices.WebServer;
 import musicdata.Playlist;
 import spotify.SpotifyConnector;
-import vk.VkСonnector;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Main {
-    private  static String urlPlaylistTest = "https://vk.com/music/playlist/154428962_177_49fc960dd08869a9af";
+    private static void startStream(Playlist playlist, SpotifyConnector spotifyConnector) {
+        new Thread(new WebServer(playlist, spotifyConnector)).start();
+    }
 
-    public static void main(String[] args) {  
+    public static void main(String[] args) {
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             Playlist playlist = new Playlist();
-            VkСonnector.setTrackVkPlaylist(playlist, urlPlaylistTest); //заглушка
-            //VkСonnector.setTrackVkPlaylist(playlist, reader.readLine()); //version input url
-            //JsoupRequest.requestUploadImage("");
-            new SpotifyConnector().runSpotifyImporter(playlist);
+            SpotifyConnector spotifyConnector = new SpotifyConnector();
+
+            startStream(playlist, spotifyConnector);
         }
         catch (Exception exception) {
             exception.printStackTrace();
