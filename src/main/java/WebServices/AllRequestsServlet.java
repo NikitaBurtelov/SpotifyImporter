@@ -37,10 +37,11 @@ public class AllRequestsServlet extends HttpServlet {
             exception.printStackTrace();
         }
     }
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         playlist.setUrl(request.getParameter("url"));
         VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
-        spotifyConnector.getCodeUrl();
+
+        response.getWriter().println(spotifyConnector.getCodeUrl());
 
         response.setContentType("text/html;charset=utf-8");
     }

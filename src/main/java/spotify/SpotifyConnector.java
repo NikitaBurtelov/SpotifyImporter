@@ -79,7 +79,7 @@ public class SpotifyConnector {
         }
     }*/
     //Spotify url
-    public void getCodeUrl() {
+    public String getCodeUrl() {
         String url = new URIBuilder().setScheme("https")
                 .setHost("accounts.spotify.com")
                 .setPath("/authorize")
@@ -89,6 +89,8 @@ public class SpotifyConnector {
                 .addParameter("redirect_uri","http://localhost:8888/callback").toString();
 
         System.out.println(url);
+
+        return url;
     }
 
     public void runSpotifyImporter(Playlist playlist) {
