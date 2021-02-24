@@ -13,6 +13,26 @@ import java.io.IOException;
 
 public class JsoupRequest {
 
+    public static void joinUrl() {
+        try {
+            Document doc = Jsoup.connect("https://accounts.spotify.com/authorize")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8")
+                    .data("grant_type", "code")
+                    .data("client_id", "c700db30083545a6a05352d0304a0597")
+                    .data("scope","playlist-modify-public+playlist-modify-private")
+                    .data("redirect_uri", "redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback")
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9"
+                            + ",*/*;q=0.8")
+                    .get();
+            System.out.println(doc.text());
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
     public static String getToken(String code, String clientId, String clientSecret) {
         try {
             Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")
