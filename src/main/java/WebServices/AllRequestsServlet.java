@@ -41,9 +41,8 @@ public class AllRequestsServlet extends HttpServlet {
         playlist.setUrl(request.getParameter("url"));
         JsoupRequest.joinUrl();
         VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
-
-        response.getWriter().println(spotifyConnector.getCodeUrl());
         response.sendRedirect("http://localhost:8888");
+        response.getWriter().println(spotifyConnector.getCodeUrl());
         response.setContentType("text/html;charset=utf-8");
     }
 }
