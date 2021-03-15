@@ -1,21 +1,17 @@
 package spotify;
 
-import WebServices.WebServer;
 import musicdata.Playlist;
 import musicdata.Track;
 import org.apache.http.client.utils.URIBuilder;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+@Component
 public class SpotifyConnector {
     private String code;
     private final String client_id = getJsonObject("client_id");

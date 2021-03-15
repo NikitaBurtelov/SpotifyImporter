@@ -1,6 +1,8 @@
-package WebServices;
+package webServices;
 
 import musicdata.Playlist;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import spotify.JsoupRequest;
 import spotify.SpotifyConnector;
 import vk.VkConnector;
@@ -10,14 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Component
 public class AllRequestsServlet extends HttpServlet {
     private Playlist playlist;
     private SpotifyConnector spotifyConnector;
-
+    @Autowired
     public void setSpotifyConnector(SpotifyConnector spotifyConnector) {
         this.spotifyConnector = spotifyConnector;
     }
-
+    @Autowired
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }

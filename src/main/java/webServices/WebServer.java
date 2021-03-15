@@ -1,4 +1,4 @@
-package WebServices;
+package webServices;
 
 import musicdata.Playlist;
 import org.eclipse.jetty.server.Handler;
@@ -7,28 +7,24 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import spotify.SpotifyConnector;
 
-import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-//Тестовый вариант
+@Component
 public class WebServer implements Runnable {
     static final int port = 8888;
-    private final Playlist playlist;
-    private final SpotifyConnector spotifyConnector;
+    private final AllRequestsServlet allRequestsServlet;
 
-    public WebServer(Playlist playlist, SpotifyConnector spotifyConnector) {
-        this.playlist = playlist;
-        this.spotifyConnector = spotifyConnector;
+    @Autowired
+    public WebServer(AllRequestsServlet allRequestsServlet) {
+        this.allRequestsServlet = allRequestsServlet;
     }
 
     private void launch() {
         try {
-            AllRequestsServlet allRequestsServlet = new AllRequestsServlet();
-            allRequestsServlet.setSpotifyConnector(spotifyConnector);
-            allRequestsServlet.setPlaylist(playlist);
-
             ServletContextHandler contextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
             contextHandler.addServlet(new ServletHolder(allRequestsServlet), "/callback");
 

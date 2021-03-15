@@ -1,7 +1,10 @@
 package musicdata;
 
+import org.springframework.stereotype.Component;
+
 import java.util.ArrayList;
 
+@Component()
 public class Playlist {
     private ArrayList<Track> arrTracks;
     private String title;
