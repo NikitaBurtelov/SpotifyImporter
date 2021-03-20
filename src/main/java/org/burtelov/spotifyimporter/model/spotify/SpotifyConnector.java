@@ -43,7 +43,8 @@ public class SpotifyConnector {
         List<Track> trackList = playlist.getArrTrack();
 
         for (Track track : trackList) {
-            track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
+            track.setIdSpotify(JsoupRequest.requestId(track.getTitle()
+                    + " " + track.getArtist(), accessToken));
         }
     }
 
@@ -99,6 +100,7 @@ public class SpotifyConnector {
             getIdTrackSpotify(playlist);
             createPlaylist(playlist);
             addItems(playlist);
+            playlist.clearArr();
         }
         catch (Exception exception) {
             exception.printStackTrace();

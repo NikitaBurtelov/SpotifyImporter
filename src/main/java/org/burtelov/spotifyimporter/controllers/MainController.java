@@ -30,15 +30,14 @@ public class MainController {
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
-    
+
     @GetMapping
-    public String inputIdPage() {
+    public String inputIdPage(@ModelAttribute("user") User user) {
         return "data_input";
     }
 
     @PostMapping("input")
-    public String inputId(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult) {
+    public String inputId(@ModelAttribute("user") User user) {
 
         spotifyConnector.setUser_id(user.getId());
         System.out.println(user.getId());
@@ -63,8 +62,12 @@ public class MainController {
 
         return "index";
     }
+    @PostMapping("/callback")
+    public String callbackPost() {
+        return "index";
+    }
 
-    @PostMapping
+    @PostMapping("index")
     public String upload(HttpServletResponse response,HttpServletRequest request, Model model) {
         String urlPlaylistVK = request.getParameter("url");
         playlist.setUrl(urlPlaylistVK);
@@ -75,30 +78,6 @@ public class MainController {
 
         model.addAttribute("url", urlPlaylistVK);
 
-        return "index";
+        return "redirect:https://accounts.spotify.com/authorize?client_id=c700db30083545a6a05352d0304a0597&response_type=code&scope=playlist-modify-public+playlist-modify-private&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback";
     }
-//
-//    @GetMapping("/")
-//    public String newPerson(@ModelAttribute("person") Person person) {
-//        return "people/new";
-//    }
-//
-//    @PatchMapping("/{id}")
-//    public String update(@ModelAttribute("person") @Valid Person person,
-//                         BindingResult bindingResult,
-//                         @PathVariable("id") int id) {
-//        if (bindingResult.hasErrors()) {
-//            return "people/edit";
-//        }
-//
-//        personDao.update(id, person);
-//
-//        return "redirect:/people";
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public String delete(@PathVariable("id") int id) {
-//        personDao.delete(id);
-//        return "redirect:/people";
-//    }
 }

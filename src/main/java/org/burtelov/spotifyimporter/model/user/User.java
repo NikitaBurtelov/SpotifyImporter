@@ -13,6 +13,14 @@ public class User {
     @NotEmpty(message = "Id id must not be empty")
     String id;
 
+    public User(String id) {
+        this.id = id;
+    }
+
+    public User() {
+
+    }
+
     public String getId() {
         return id;
     }
