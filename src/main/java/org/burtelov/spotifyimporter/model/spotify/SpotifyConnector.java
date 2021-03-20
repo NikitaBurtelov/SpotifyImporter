@@ -1,24 +1,35 @@
-package spotify;
+package org.burtelov.spotifyimporter.model.spotify;
 
-import musicdata.Playlist;
-import musicdata.Track;
 import org.apache.http.client.utils.URIBuilder;
+import org.burtelov.spotifyimporter.model.musicdata.Playlist;
+import org.burtelov.spotifyimporter.model.musicdata.Track;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 
 @Component
 public class SpotifyConnector {
     private String code;
-    private final String client_id = getJsonObject("client_id");
-    private final String user_id = getJsonObject("user_id");
-    private final String client_secret = getJsonObject("client_secret");
-    private final String redirect_uri = getJsonObject("redirect_uri");
+
+    @Value("${client_id}")
+    private String client_id;
+    @Value("${user_id}")
+    private String user_id;
+    @Value("${client_secret}")
+    private String client_secret;
+    @Value("${redirect_uri}")
+    private String redirect_uri;
     private static String accessToken;
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 
     public void setCode(String code) {
         this.code = code;
@@ -26,16 +37,6 @@ public class SpotifyConnector {
 
     public String getCode() {
         return code;
-    }
-
-    private static String getJsonObject(String key) {
-        try {
-            return ((JSONObject) (new JSONParser()).parse(new FileReader("src/main/resources/data/spotify_token.json"))).get(key).toString();
-
-        } catch (IOException | ParseException fileNotFoundException) {
-            fileNotFoundException.printStackTrace();
-            return null;
-        }
     }
 
     private void getIdTrackSpotify(Playlist playlist) {

@@ -1,4 +1,4 @@
-package musicdata;
+package org.burtelov.spotifyimporter.model.musicdata;
 
 public class Track {
     private String title;

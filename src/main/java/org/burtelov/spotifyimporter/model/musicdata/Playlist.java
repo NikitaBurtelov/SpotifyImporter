@@ -1,4 +1,4 @@
-package musicdata;
+package org.burtelov.spotifyimporter.model.musicdata;
 
 import org.springframework.stereotype.Component;
 

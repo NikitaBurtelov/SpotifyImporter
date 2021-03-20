@@ -1,13 +1,12 @@
-package spotify;
+package org.burtelov.spotifyimporter.model.spotify;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import musicdata.Playlist;
+import org.burtelov.spotifyimporter.model.musicdata.Playlist;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 
