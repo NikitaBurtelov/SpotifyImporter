@@ -23,20 +23,15 @@
 <div align="center">
     <div align="middle">
         <div class="white glitch-window">
-            <form method="POST">
+            <form method="POST" action="/index">
                 <label for="url">Url </label>
                 <input type="url"
                        th:value="${url}"
                        name="url" id="url"/>
-                <input type="button" onclick="window.location.href = 'https://accounts.spotify.com/authorize?client_id=c700db30083545a6a05352d0304a0597&response_type=code&scope=playlist-modify-public+playlist-modify-private&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback';" value="Ok">
+                <br/>
+                <input th:marginheight="5%" type="submit" value="Ok"/>
+<!--                <input type="button" onclick="window.location.href = 'https://accounts.spotify.com/authorize?client_id=c700db30083545a6a05352d0304a0597&response_type=code&scope=playlist-modify-public+playlist-modify-private&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback';" value="Ok">-->
             </form>
-            <hr>
-            <form>
-                <input type="button" onclick="window.location.href = 'https://accounts.spotify.com/authorize?client_id=c700db30083545a6a05352d0304a0597&response_type=code&scope=playlist-modify-public+playlist-modify-private&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback';"
-                value="GO SP"/>
-            </form>
-
-            <p>Message: </p>
         </div>
     </div>
 </div>

@@ -46,4 +46,8 @@ public class Playlist {
     public void addTrack(Track track) {
         arrTracks.add(track);
     }
+
+    public void clearArr() {
+        arrTracks.clear();
+    }
 }

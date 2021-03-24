@@ -6,11 +6,11 @@
 </head>
 <body>
 <!--/*@thymesVar id="user" type="org.burtelov.spotifyimporter.model.user.User"*/-->
-<form method="POST" th:action="@{/input}" th:object="${user}">
+<form th:method="POST" th:action="@{/input}" th:object="${user}">
     <label for="id1">Id </label>
-    <input type="text" id="id1"/>
-    <br>
-    <input type="button" value="Next"/>
+    <input type="text" th:field="*{id}" id="id1"/>
+    <br/>
+    <input type="submit" value="Next"/>
 </form>
 </body>
 </html>

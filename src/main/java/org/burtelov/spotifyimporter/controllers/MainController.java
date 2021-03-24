@@ -30,15 +30,14 @@ public class MainController {
     public void setPlaylist(Playlist playlist) {
         this.playlist = playlist;
     }
-    
+
     @GetMapping
-    public String inputIdPage() {
+    public String inputIdPage(@ModelAttribute("user") User user) {
         return "data_input";
     }
 
     @PostMapping("input")
-    public String inputId(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult) {
+    public String inputId(@ModelAttribute("user") User user) {
 
         spotifyConnector.setUser_id(user.getId());
         System.out.println(user.getId());
@@ -64,18 +63,16 @@ public class MainController {
         return "index";
     }
 
-    @PostMapping
+    @PostMapping("index")
     public String upload(HttpServletResponse response,HttpServletRequest request, Model model) {
         String urlPlaylistVK = request.getParameter("url");
         playlist.setUrl(urlPlaylistVK);
         VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
         JsoupRequest.joinUrl();
 
-        spotifyConnector.getCodeUrl();
-
         model.addAttribute("url", urlPlaylistVK);
 
-        return "index";
+        return "redirect:" + spotifyConnector.getCodeUrl();
     }
 //
 //    @GetMapping("/")

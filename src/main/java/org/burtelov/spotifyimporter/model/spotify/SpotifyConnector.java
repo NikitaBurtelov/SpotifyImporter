@@ -43,7 +43,8 @@ public class SpotifyConnector {
         List<Track> trackList = playlist.getArrTrack();
 
         for (Track track : trackList) {
-            track.setIdSpotify(JsoupRequest.requestId("track:"+track.getTitle()+" artist:"+track.getArtist(), accessToken));
+            track.setIdSpotify(JsoupRequest.requestId(track.getTitle() +
+                    " " + track.getArtist(), accessToken));
         }
     }
 
@@ -82,7 +83,7 @@ public class SpotifyConnector {
                 .setPath("/authorize")
                 .addParameter("client_id", client_id)
                 .addParameter("response_type","code")
-                .addParameter("scope","playlist-modify-public playlist-modify-private")
+                .addParameter("scope","playlist-modify-public playlist-modify-private ugc-image-upload")
                 .addParameter("redirect_uri","http://localhost:8888/callback").toString();
 
         System.out.println(url);
@@ -99,6 +100,7 @@ public class SpotifyConnector {
             getIdTrackSpotify(playlist);
             createPlaylist(playlist);
             addItems(playlist);
+            JsoupRequest.requestUploadImage(playlist.getId(), accessToken);
         }
         catch (Exception exception) {
             exception.printStackTrace();
