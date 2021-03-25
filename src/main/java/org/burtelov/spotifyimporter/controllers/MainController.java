@@ -62,10 +62,6 @@ public class MainController {
 
         return "index";
     }
-    @PostMapping("/callback")
-    public String callbackPost() {
-        return "index";
-    }
 
     @PostMapping("index")
     public String upload(HttpServletResponse response,HttpServletRequest request, Model model) {
@@ -76,10 +72,30 @@ public class MainController {
 
         model.addAttribute("url", urlPlaylistVK);
 
-<<<<<<< HEAD
         return "redirect:" + spotifyConnector.getCodeUrl();
-=======
-        return "redirect:https://accounts.spotify.com/authorize?client_id=c700db30083545a6a05352d0304a0597&response_type=code&scope=playlist-modify-public+playlist-modify-private&redirect_uri=http%3A%2F%2Flocalhost%3A8888%2Fcallback";
->>>>>>> 9da7c6f48c0e1dccdeea5c2fbd275585596c0bfe
     }
+//
+//    @GetMapping("/")
+//    public String newPerson(@ModelAttribute("person") Person person) {
+//        return "people/new";
+//    }
+//
+//    @PatchMapping("/{id}")
+//    public String update(@ModelAttribute("person") @Valid Person person,
+//                         BindingResult bindingResult,
+//                         @PathVariable("id") int id) {
+//        if (bindingResult.hasErrors()) {
+//            return "people/edit";
+//        }
+//
+//        personDao.update(id, person);
+//
+//        return "redirect:/people";
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public String delete(@PathVariable("id") int id) {
+//        personDao.delete(id);
+//        return "redirect:/people";
+//    }
 }

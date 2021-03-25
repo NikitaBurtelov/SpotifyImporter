@@ -1,27 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script src="/cdn-cgi/apps/head/uBh2QNnMpU-30rek_151JNjGf8U.js"></script>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="icon" href="https://i.pinimg.com/564x/1c/06/5d/1c065d6aaeaa6e16316f1927ae30c1c6.jpg">
-    <meta name="theme-color" content="#292b2c">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="msapplication-tap-highlight" content="no">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Nikita Burtelov Personal Page">
-    <meta name="description" content="Nikita Burtelov Personal Page" />
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Nikita Page">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="https://i.pinimg.com/564x/1c/06/5d/1c065d6aaeaa6e16316f1927ae30c1c6.jpg">
-
     <meta charset="UTF-8">
     <title>Input</title>
 </head>
 <body>
-<<<<<<< HEAD
 <!--/*@thymesVar id="user" type="org.burtelov.spotifyimporter.model.user.User"*/-->
 <form th:method="POST" th:action="@{/input}" th:object="${user}">
     <label for="id1">Id </label>
@@ -29,20 +12,5 @@
     <br/>
     <input type="submit" value="Next"/>
 </form>
-=======
-<div align="center">
-    <div align="middle">
-        <div class="white glitch-window">
-            <!--/*@thymesVar id="user" type="org.burtelov.spotifyimporter.model.user.User"*/-->
-            <form th:method="POST" th:action="@{/input}" th:object="${user}">
-                <label for="id1">Id </label>
-                <input type="text" th:field="*{id}" id="id1"/>
-                <br><br>
-                <input type="submit" value="Next"/>
-            </form>
-        </div>
-    </div>
-</div>
->>>>>>> 9da7c6f48c0e1dccdeea5c2fbd275585596c0bfe
 </body>
 </html>
