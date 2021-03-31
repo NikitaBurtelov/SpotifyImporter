@@ -7,6 +7,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.io.FileReader;
@@ -14,12 +16,12 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class SpotifyConnector {
     private String code;
 
     @Value("${client_id}")
     private String client_id;
-    @Value("${user_id}")
     private String user_id;
     @Value("${client_secret}")
     private String client_secret;

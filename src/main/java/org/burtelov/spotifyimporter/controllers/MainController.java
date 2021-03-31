@@ -3,32 +3,41 @@ package org.burtelov.spotifyimporter.controllers;
 import org.burtelov.spotifyimporter.model.musicdata.Playlist;
 import org.burtelov.spotifyimporter.model.spotify.JsoupRequest;
 import org.burtelov.spotifyimporter.model.spotify.SpotifyConnector;
-import org.burtelov.spotifyimporter.model.user.User;
+import org.burtelov.spotifyimporter.model.users.User;
+import org.burtelov.spotifyimporter.model.users.Users;
 import org.burtelov.spotifyimporter.model.vk.VkConnector;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 /**
  * @author Nikita Burtelov
+ * TODO Оптимизировать контроллер
  */
 @Controller
 public class MainController {
-    private Playlist playlist;
-    private SpotifyConnector spotifyConnector;
+    private Users users;
+    private String bufferId;
+    ApplicationContext context;
+//
+//    @Autowired
+//    public void setSpotifyConnector(SpotifyConnector spotifyConnector) {
+//        this.spotifyConnector = spotifyConnector;
+//    }
+
     @Autowired
-    public void setSpotifyConnector(SpotifyConnector spotifyConnector) {
-        this.spotifyConnector = spotifyConnector;
+    public void setContext(ApplicationContext context) {
+        this.context = context;
     }
+
     @Autowired
-    public void setPlaylist(Playlist playlist) {
-        this.playlist = playlist;
+    public void setUsers(Users users) {
+        this.users = users;
     }
 
     @GetMapping
@@ -37,42 +46,60 @@ public class MainController {
     }
 
     @PostMapping("input")
-    public String inputId(@ModelAttribute("user") User user) {
+    public String inputId(@ModelAttribute("user") @Valid User user,
+                          BindingResult bindingResult) {
 
-        spotifyConnector.setUser_id(user.getId());
-        System.out.println(user.getId());
+        if (bindingResult.hasErrors()) {
+            return "data_input";
+        }
+        User realUser = context.getBean(User.class);
+        realUser.setId(user.getId());
+        realUser.getSpotifyConnector().setUser_id(realUser.getId());
 
-        return "redirect:/index";
+        users.addUser(realUser);
+
+        return "redirect:"+ user.getId() +"/index";
     }
 
-    @GetMapping("index")
-    public String mainpage() {
+    @GetMapping("/{id}/index")
+    public String mainpage(@PathVariable("id") String id, Model model) {
+        model.addAttribute("user", users.getUser(id));
         return "index";
     }
 
     @GetMapping("/callback")
     public String callback(HttpServletRequest request, Model model) {
         String code = request.getParameter("code");
-        System.out.println(code);
+        User user = users.getUser(bufferId);
+        SpotifyConnector spotifyConnector = users.getUser(bufferId).getSpotifyConnector();
 
         spotifyConnector.setCode(code);
-        spotifyConnector.runSpotifyImporter(playlist);
+        spotifyConnector.runSpotifyImporter(user.getPlaylist());
 
-        model.addAttribute("url", playlist.getUrl());
+        model.addAttribute("url", user.getPlaylist().getUrl());
 
-        return "index";
+        return "redirect:"+ user.getId() + "/index";
     }
 
-    @PostMapping("index")
-    public String upload(HttpServletResponse response,HttpServletRequest request, Model model) {
+    @PostMapping("/{id}/index")
+    public String upload(HttpServletRequest request,
+                         Model model, @PathVariable String id) {
+        User user = users.getUser(id);
+        Playlist playlist = user.getPlaylist();
+        bufferId = user.getId();
+//
+//        if (bindingResult.hasErrors()) {
+//            return "index";
+//        }
+
         String urlPlaylistVK = request.getParameter("url");
         playlist.setUrl(urlPlaylistVK);
         VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
         JsoupRequest.joinUrl();
 
-        model.addAttribute("url", urlPlaylistVK);
+        model.addAttribute("user", user);
 
-        return "redirect:" + spotifyConnector.getCodeUrl();
+        return "redirect:" + user.getSpotifyConnector().getCodeUrl();
     }
 //
 //    @GetMapping("/")
