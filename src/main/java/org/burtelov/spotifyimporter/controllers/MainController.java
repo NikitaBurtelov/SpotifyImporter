@@ -1,5 +1,6 @@
 package org.burtelov.spotifyimporter.controllers;
 
+import org.burtelov.spotifyimporter.dao.UserDao;
 import org.burtelov.spotifyimporter.model.musicdata.Playlist;
 import org.burtelov.spotifyimporter.model.spotify.JsoupRequest;
 import org.burtelov.spotifyimporter.model.spotify.SpotifyConnector;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.logging.Logger;
 
 /**
  * @author Nikita Burtelov
@@ -23,12 +25,24 @@ import javax.validation.Valid;
 public class MainController {
     private Users users;
     private String bufferId;
+    private UserDao userDao;
+    private SpotifyConnector spotifyConnector;
     ApplicationContext context;
 //
 //    @Autowired
 //    public void setSpotifyConnector(SpotifyConnector spotifyConnector) {
 //        this.spotifyConnector = spotifyConnector;
 //    }
+
+    @Autowired
+    public void setSpotifyConnector(SpotifyConnector spotifyConnector) {
+        this.spotifyConnector = spotifyConnector;
+    }
+
+    @Autowired
+    public void setUserDao(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Autowired
     public void setContext(ApplicationContext context) {
@@ -45,84 +59,95 @@ public class MainController {
         return "data_input";
     }
 
+    //Авторизация пользователя. Получаем token авторизации
     @PostMapping("input")
-    public String inputId(@ModelAttribute("user") @Valid User user,
-                          BindingResult bindingResult) {
-
-        if (bindingResult.hasErrors()) {
-            return "data_input";
-        }
-        User realUser = context.getBean(User.class);
-        realUser.setId(user.getId());
-        realUser.getSpotifyConnector().setUser_id(realUser.getId());
-
-        users.addUser(realUser);
-
-        return "redirect:"+ user.getId() +"/index";
+    public String authorizationSpotify(@ModelAttribute("user") @Valid User userBuffer) {
+        return "redirect:" + spotifyConnector.getCodeUrl();
     }
+    //Переадресация spotify
+    @GetMapping("/callback")
+    public String callback(HttpServletRequest request) {
+        String code = request.getParameter("code");
+        User user = context.getBean(User.class);
 
-    @GetMapping("/{id}/index")
-    public String mainpage(@PathVariable("id") String id, Model model) {
-        model.addAttribute("user", users.getUser(id));
+        Logger.getLogger("Input").info(code);
+
+        spotifyConnector.setCode(code);
+        //Получить id пользователя
+        //TODO проверить на null
+        String idUser = JsoupRequest.requestGetIdUserSpotify(spotifyConnector.getTokenSpotify());
+        user.setId(idUser);
+        userDao.addUser(user);
+
         return "index";
     }
 
-    @GetMapping("/callback")
-    public String callback(HttpServletRequest request, Model model) {
-        String code = request.getParameter("code");
-        User user = users.getUser(bufferId);
-        SpotifyConnector spotifyConnector = users.getUser(bufferId).getSpotifyConnector();
-
-        spotifyConnector.setCode(code);
-        spotifyConnector.runSpotifyImporter(user.getPlaylist());
-
-        model.addAttribute("url", user.getPlaylist().getUrl());
-
-        return "redirect:"+ user.getId() + "/index";
+    @GetMapping("index")
+    public String mainpage() {
+        return "index";
     }
 
-    @PostMapping("/{id}/index")
-    public String upload(HttpServletRequest request,
-                         Model model, @PathVariable String id) {
-        User user = users.getUser(id);
-        Playlist playlist = user.getPlaylist();
-        bufferId = user.getId();
-//
-//        if (bindingResult.hasErrors()) {
-//            return "index";
-//        }
 
-        String urlPlaylistVK = request.getParameter("url");
-        playlist.setUrl(urlPlaylistVK);
-        VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
-        JsoupRequest.joinUrl();
-
-        model.addAttribute("user", user);
-
-        return "redirect:" + user.getSpotifyConnector().getCodeUrl();
-    }
-//
-//    @GetMapping("/")
-//    public String newPerson(@ModelAttribute("person") Person person) {
-//        return "people/new";
+    //TODO v.1
+//    @GetMapping
+//    public String inputIdPage(@ModelAttribute("user") User user) {
+//        return "data_input";
 //    }
 //
-//    @PatchMapping("/{id}")
-//    public String update(@ModelAttribute("person") @Valid Person person,
-//                         BindingResult bindingResult,
-//                         @PathVariable("id") int id) {
+//    @PostMapping("input")
+//    public String inputId(@ModelAttribute("user") @Valid User user,
+//                          BindingResult bindingResult) {
+//
 //        if (bindingResult.hasErrors()) {
-//            return "people/edit";
+//            return "data_input";
 //        }
+//        User realUser = context.getBean(User.class);
+//        realUser.setId(user.getId());
+//        realUser.getSpotifyConnector().setUser_id(realUser.getId());
 //
-//        personDao.update(id, person);
+//        userDao.addUser(realUser);
 //
-//        return "redirect:/people";
+//        return "redirect:"+ user.getId() +"/index";
 //    }
 //
-//    @DeleteMapping("/{id}")
-//    public String delete(@PathVariable("id") int id) {
-//        personDao.delete(id);
-//        return "redirect:/people";
+//    @GetMapping("/{id}/index")
+//    public String mainpage(@PathVariable("id") String id, Model model) {
+//        model.addAttribute("user", users.getUser(id));
+//        return "index";
+//    }
+//
+//    @GetMapping("/callback")
+//    public String callback(HttpServletRequest request, Model model) {
+//        String code = request.getParameter("code");
+//        User user = users.getUser(bufferId);
+//        SpotifyConnector spotifyConnector = users.getUser(bufferId).getSpotifyConnector();
+//
+//        spotifyConnector.setCode(code);
+//        spotifyConnector.runSpotifyImporter(user.getPlaylist());
+//
+//        model.addAttribute("url", user.getPlaylist().getUrl());
+//
+//        return "redirect:"+ user.getId() + "/index";
+//    }
+//
+//    @PostMapping("/{id}/index")
+//    public String upload(HttpServletRequest request,
+//                         Model model, @PathVariable String id) {
+//        User user = users.getUser(id);
+//        Playlist playlist = user.getPlaylist();
+//        bufferId = user.getId();
+////
+////        if (bindingResult.hasErrors()) {
+////            return "index";
+////        }
+//
+//        String urlPlaylistVK = request.getParameter("url");
+//        playlist.setUrl(urlPlaylistVK);
+//        VkConnector.setTrackVkPlaylist(playlist, playlist.getUrl());
+//        JsoupRequest.joinUrl();
+//
+//        model.addAttribute("user", user);
+//
+//        return "redirect:" + user.getSpotifyConnector().getCodeUrl();
 //    }
 }

@@ -53,6 +53,31 @@ public class JsoupRequest {
         }
     }
 
+    public static String requestGetIdUserSpotify(String accessToken) {
+        try {
+            Document doc = Jsoup.connect("https://api.spotify.com/v1/me")
+                    .header("Accept-Language", "en")
+                    .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("Authorization", "Bearer " + accessToken)
+                    .ignoreHttpErrors(true)
+                    .ignoreContentType(true)
+                    .get();
+
+            System.out.println(doc.text());
+            JsonParser parser = new JsonParser();
+            JsonElement jsonElement = parser.parse(doc.text());
+
+            JsonObject root = jsonElement.getAsJsonObject();
+
+            return root.get("id").toString();
+
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            return null;
+        }
+    }
+
     public static String getToken(String code, String clientId, String clientSecret) {
         try {
             Document doc = Jsoup.connect("https://accounts.spotify.com/api/token")

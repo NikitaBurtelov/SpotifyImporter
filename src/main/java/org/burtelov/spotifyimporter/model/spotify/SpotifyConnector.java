@@ -78,6 +78,11 @@ public class SpotifyConnector {
             exception.printStackTrace();
         }
     }*/
+    //TODO test version не забыть удалить
+    public String getTokenSpotify() {
+        return JsoupRequest.getToken(code, client_id, client_secret);
+    }
+
     //Spotify url
     public String getCodeUrl() {
         String url = new URIBuilder().setScheme("https")
@@ -98,7 +103,7 @@ public class SpotifyConnector {
             //startStream(); //run server. localhost. port 8888
             //getCodeUrl(); //get Spotify url + authorization
             //buffRead();  //input code
-            accessToken = JsoupRequest.getToken(code, client_id, client_secret);
+            accessToken = getTokenSpotify();
             getIdTrackSpotify(playlist);
             createPlaylist(playlist);
             addItems(playlist);
